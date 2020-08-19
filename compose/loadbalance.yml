@@ -26,6 +26,8 @@ services:
     container_name: loadbalance_jblb
     image: 'lpeters999/eap-full-ci:latest-7.1.1'
     restart: always
+    environment:
+      - JBOSS_LB_SECURITY_KEY=mysec_key
     volumes:
       - '${DOCKER_COMPOSE}/standalone-load-balance.xml:/opt/jboss/standalone/configuration/standalone.xml'
     depends_on:
@@ -42,6 +44,7 @@ services:
     restart: always
     environment:
       - JBOSS_NODE_ID=node1
+      - JBOSS_LB_SECURITY_KEY=mysec_key
     volumes:
       - '${DOCKER_DEPLOYMENTS}/app.war:/opt/jboss/standalone/deployments/app.war'
       - '${DOCKER_COMPOSE}/standalone-ha.xml:/opt/jboss/standalone/configuration/standalone.xml'
@@ -57,6 +60,7 @@ services:
     restart: always
     environment:
       - JBOSS_NODE_ID=node2
+      - JBOSS_LB_SECURITY_KEY=mysec_key
     volumes:
       - '${DOCKER_DEPLOYMENTS}/app.war:/opt/jboss/standalone/deployments/app.war'
       - '${DOCKER_COMPOSE}/standalone-ha.xml:/opt/jboss/standalone/configuration/standalone.xml'

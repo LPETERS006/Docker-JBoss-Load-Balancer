@@ -437,7 +437,7 @@
             </mail-session>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:modcluster:3.0">
-            <mod-cluster-config advertise-socket="modcluster" connector="ajp">
+            <mod-cluster-config advertise-socket="modcluster" connector="ajp" advertise="true" advertise-security-key="${JBOSS_LB_SECURITY_KEY}">
                 <dynamic-load-provider>
                     <load-metric type="cpu"/>
                 </dynamic-load-provider>
@@ -501,7 +501,7 @@
             </singleton-policies>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:transactions:4.0">
-            <core-environment>
+            <core-environment node-indentifier="${JBOSS_NODE_ID}">
                 <process-id>
                     <uuid/>
                 </process-id>
@@ -509,7 +509,7 @@
             <recovery-environment socket-binding="txn-recovery-environment" status-socket-binding="txn-status-manager"/>
             <object-store path="tx-object-store" relative-to="jboss.server.data.dir"/>
         </subsystem>
-        <subsystem xmlns="urn:jboss:domain:undertow:4.0">
+        <subsystem xmlns="urn:jboss:domain:undertow:4.0" instance-id="${JBOSS_NODE_ID}">
             <buffer-cache name="default"/>
             <server name="default-server">
                 <ajp-listener name="ajp" socket-binding="ajp"/>
