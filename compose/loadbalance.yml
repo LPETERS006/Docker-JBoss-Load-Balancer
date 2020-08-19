@@ -1,0 +1,75 @@
+version: "3.7"
+services:
+
+  pg:
+    container_name: loadbalance_pg
+    image: 'postgis/postgis:12-master'
+    environment:
+      - POSTGRES_PASSWORD=docker
+    
+    # RESTART EVEN AFTER REBOOTING THE DOCKER-HOST
+    restart: always
+    
+    # PERSIST DATA AND MOUNT DUMP FOR SQL RESTORE/DUMP
+    volumes:
+      - 'pg_data:/var/lib/postgresql/data'
+      - '${DOCKER_DUMP}:/var/lib/postgresql/dump'
+
+    # HOST PORT : CONTAINER-INTERNAL PORT
+    ports:
+      - '25432:5432'
+    cap_add:
+      - 'ALL'
+
+  # JBOSS EAP - LOAD BALANCER
+  jblb:
+    container_name: loadbalance_jblb
+    image: 'lpeters999/eap-full-ci:latest-7.1.1'
+    restart: always
+    volumes:
+      - '${DOCKER_COMPOSE}/standalone-load-balance.xml:/opt/jboss/standalone/configuration/standalone.xml'
+    depends_on:
+      - pg
+    ports:
+      - '38090:8090'
+      - '40000:10000'
+    cap_add:
+      - ALL
+
+  jbnode1:
+    container_name: loadbalance_jbnode1
+    image: 'lpeters999/eap-full-ci:latest-7.1.1'
+    restart: always
+    environment:
+      - JBOSS_NODE_ID=node1
+    volumes:
+      - '${DOCKER_DEPLOYMENTS}/app.war:/opt/jboss/standalone/deployments/app.war'
+      - '${DOCKER_COMPOSE}/standalone-ha.xml:/opt/jboss/standalone/configuration/standalone.xml'
+    depends_on:
+      - pg
+      - jblb
+    cap_add:
+      - ALL
+
+  jbnode2:
+    container_name: loadbalance_jbnode2
+    image: 'lpeters999/eap-full-ci:latest-7.1.1'
+    restart: always
+    environment:
+      - JBOSS_NODE_ID=node2
+    volumes:
+      - '${DOCKER_DEPLOYMENTS}/app.war:/opt/jboss/standalone/deployments/app.war'
+      - '${DOCKER_COMPOSE}/standalone-ha.xml:/opt/jboss/standalone/configuration/standalone.xml'
+    depends_on:
+      - pg
+      - jblb
+    cap_add:
+      - ALL
+
+# PERSISTENCE DATA VOLUMES
+volumes:
+  pg_data:
+    driver: local-persist
+    driver_opts:
+      mountpoint: ${LB_PG_DATA}
+
