@@ -29,7 +29,7 @@ services:
     environment:
       - JBOSS_LB_SECURITY_KEY=mysec_key
     volumes:
-      - '${DOCKER_COMPOSE}/standalone-load-balance.xml:/opt/jboss/standalone/configuration/standalone.xml'
+      - '${DOCKER_COMPOSE}/loadbalance/standalone-load-balance.xml:/opt/jboss/standalone/configuration/standalone.xml'
     depends_on:
       - pg
     ports:
@@ -46,8 +46,8 @@ services:
       - JBOSS_NODE_ID=node1
       - JBOSS_LB_SECURITY_KEY=mysec_key
     volumes:
-      - '${DOCKER_DEPLOYMENTS}/app.war:/opt/jboss/standalone/deployments/app.war'
-      - '${DOCKER_COMPOSE}/standalone-ha.xml:/opt/jboss/standalone/configuration/standalone.xml'
+      - '${DOCKER_DEPLOYMENTS}/loadbalance.war:/opt/jboss/standalone/deployments/loadbalance.war'
+      - '${DOCKER_COMPOSE}/loadbalance/standalone.xml:/opt/jboss/standalone/configuration/standalone.xml'
     depends_on:
       - pg
       - jblb
@@ -62,8 +62,8 @@ services:
       - JBOSS_NODE_ID=node2
       - JBOSS_LB_SECURITY_KEY=mysec_key
     volumes:
-      - '${DOCKER_DEPLOYMENTS}/app.war:/opt/jboss/standalone/deployments/app.war'
-      - '${DOCKER_COMPOSE}/standalone-ha.xml:/opt/jboss/standalone/configuration/standalone.xml'
+      - '${DOCKER_DEPLOYMENTS}/loadbalance.war:/opt/jboss/standalone/deployments/loadbalance.war'
+      - '${DOCKER_COMPOSE}/loadbalance/standalone.xml:/opt/jboss/standalone/configuration/standalone.xml'
     depends_on:
       - pg
       - jblb
@@ -75,5 +75,5 @@ volumes:
   pg_data:
     driver: local-persist
     driver_opts:
-      mountpoint: ${LB_PG_DATA}
+      mountpoint: ${LOADBALANCE_PG_DATA}
 

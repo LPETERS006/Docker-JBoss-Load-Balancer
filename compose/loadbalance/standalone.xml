@@ -501,7 +501,7 @@
             </singleton-policies>
         </subsystem>
         <subsystem xmlns="urn:jboss:domain:transactions:4.0">
-            <core-environment node-indentifier="${JBOSS_NODE_ID}">
+            <core-environment node-identifier="${JBOSS_NODE_ID}">
                 <process-id>
                     <uuid/>
                 </process-id>
